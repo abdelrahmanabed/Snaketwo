@@ -478,7 +478,6 @@ function clear() {
 }
 
 function gameOver() {
-  bgMusic.pause()
 
   isGameOver = true;
   CTX.fillStyle = "rgba(0,0,0,.9)";
