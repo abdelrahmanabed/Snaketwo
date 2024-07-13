@@ -1,7 +1,7 @@
-var bgMusic = new Audio('bg.mp3');
-var eatSound = new Audio('yea.mp3');
-var crashSound = new Audio('go.mp3');
-
+const bgMusic = new Audio("./sound/bg.mp3");
+const eatSound = new Audio('./sound/yea.mp3');
+const crashSound = new Audio('./sound/go.mp3');
+bgMusic.loop = true; 
 let dom_replay = document.querySelector("#replay");
 let dom_score = document.querySelector("#score");
 let dom_canvas = document.createElement("canvas");
@@ -16,8 +16,8 @@ document.addEventListener('touchmove', handleTouchMove, false);
 let touchStartX = 0;
 let touchStartY = 0;
 
-bgMusic.play()
 
+function playbg(){  bgMusic.play()}
 
 function handleTouchStart(event) {
   touchStartX = event.touches[0].clientX;
@@ -32,23 +32,16 @@ function handleTouchMove(event) {
   let deltaX = touchEndX - touchStartX;
   let deltaY = touchEndY - touchStartY;
 
-  // Determine direction based on swipe distance
   if (Math.abs(deltaX) > Math.abs(deltaY)) {
-    // Horizontal swipe
     if (deltaX > 0) {
-      // Right swipe
       snake.dir = new helpers.Vec(cellSize, 0);
     } else {
-      // Left swipe
       snake.dir = new helpers.Vec(-cellSize, 0);
     }
   } else {
-    // Vertical swipe
     if (deltaY > 0) {
-      // Down swipe
       snake.dir = new helpers.Vec(0, cellSize);
     } else {
-      // Up swipe
       snake.dir = new helpers.Vec(0, -cellSize);
     }
   }
@@ -66,23 +59,16 @@ function handleMouseMove(event) {
   let deltaX = mouseX - snakeHeadX;
   let deltaY = mouseY - snakeHeadY;
 
-  // Adjust snake direction based on mouse position relative to snake head
   if (Math.abs(deltaX) > Math.abs(deltaY)) {
-    // Horizontal movement
     if (deltaX > 0) {
-      // Mouse is on the right
       snake.dir = new helpers.Vec(cellSize, 0);
     } else {
-      // Mouse is on the left
       snake.dir = new helpers.Vec(-cellSize, 0);
     }
   } else {
-    // Vertical movement
     if (deltaY > 0) {
-      // Mouse is below
       snake.dir = new helpers.Vec(0, cellSize);
     } else {
-      // Mouse is above
       snake.dir = new helpers.Vec(0, -cellSize);
     }
   }
@@ -102,19 +88,19 @@ let snake,
   cellsCount,
   requestID,
   targetWord = '',
-  words = ['belt', 'shirt', 'boot', 'glass'];
+  words = ['belt', 'shirt', 'boot', 'glasses'];
 
   let foodImages = {
     belt: new Image(),
     shirt: new Image(),
     boot: new Image(),
-    glass: new Image()
+    glasses: new Image()
   };
 
 foodImages.belt.src = 'belt.png';
 foodImages.shirt.src = 'shirt.png';
 foodImages.boot.src = 'boot.png';
-foodImages.glass.src = 'glass.png';
+foodImages.glasses.src = 'glasses.png';
 
 let helpers = {
   Vec: class {
@@ -150,7 +136,6 @@ let helpers = {
     }
   },
   drawGrid() {
-    // Create a radial gradient for the background
     const gradient = CTX.createConicGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H));
     gradient.addColorStop(0, "#15232E");
     gradient.addColorStop(1, "#2D546E");
@@ -158,35 +143,31 @@ let helpers = {
     CTX.fillStyle = gradient;
     CTX.fillRect(0, 0, W, H);
   
-    // Draw circles instead of lines
-    const circleRadius = 10; // Increase circle size
+    const circleRadius = 10;
     const circleGap = W / cells;
   
     for (let x = circleGap / 2; x < W; x += circleGap) {
       for (let y = circleGap / 2; y < H; y += circleGap) {
         CTX.beginPath();
         CTX.arc(x, y, circleRadius, 0, Math.PI * 2);
-        CTX.fillStyle = "#232332"; // Circle color
+        CTX.fillStyle = "#232332"; 
         CTX.fill();
         CTX.closePath();
       }
     }
   },
   drawBackground() {
-    // Create a gradient for the background
     let gradient = CTX.createLinearGradient(0, 0, 0, H);
     gradient.addColorStop(0, "#1a1a2e");
     gradient.addColorStop(1, "#000000");
   
-    // Fill the background with the gradient
     CTX.fillStyle = gradient;
     CTX.fillRect(0, 0, W, H);
   
-    // Draw circles on top of the gradient background
     let circleRadius = 150;
     let circleSpacing = 200;
   
-    CTX.fillStyle = "#0d0d1a"; // Dark blue for circles
+    CTX.fillStyle = "#0d0d1a";
   
     for (let x = circleSpacing / 2; x < W; x += circleSpacing) {
       for (let y = circleSpacing / 2; y < H; y += circleSpacing) {
@@ -271,7 +252,7 @@ class Food {
       ~~(Math.random() * cells) * cellSize
     );
     this.size = cellSize;
-    // this.instances = []; // Array to hold multiple instances of this food type
+    // this.instances = [];
     // this.spawnInitial();
 
   }
@@ -297,12 +278,12 @@ class Food {
   // }
   drawGlow() {
     let { x, y } = this.pos;
-    let glowRadius = 10 + Math.sin(Date.now() * 0.005) * 5; // Adjust glow size and speed
+    let glowRadius = 10 + Math.sin(Date.now() * 0.005) * 5; 
 
     CTX.save();
     CTX.beginPath();
     CTX.arc(x + this.size / 2, y + this.size / 2, glowRadius, 0, Math.PI * 2);
-    CTX.globalAlpha = 0.5 + Math.sin(Date.now() * 0.005) * 0.5; // Adjust alpha for pulsating effect
+    CTX.globalAlpha = 0.5 + Math.sin(Date.now() * 0.005) * 0.5; 
     CTX.fillStyle = 'rgba(255,255,255,0.2)';
     CTX.shadowColor = 'white';
     CTX.shadowBlur = 20;
@@ -314,7 +295,7 @@ class Food {
 
 function spawnFoodItems() {
   foods = [];
-  for (let i = 0; i < 10; i++) {  // Spawn 10 food items
+  for (let i = 0; i < 10; i++) {  
     words.forEach(word => {
       foods.push(new Food(word, foodImages[word]));
     });
@@ -334,10 +315,9 @@ class Snake {
     this.color = "white";
     this.history = [];
     this.total = 5;
-    this.glowCycle = 0; // Initialize glow animation cycle
+    this.glowCycle = 0; 
 
     this.delay = 5;
-       // Eye positions relative to the snake's head
        this.eyeOffset = {
         left: new helpers.Vec(-this.size / 6, -this.size / 6),
         right: new helpers.Vec(this.size / 6, -this.size / 6)
@@ -354,7 +334,6 @@ class Snake {
     let { size, history, pos } = this;
     let { x, y } = pos;
 
-    // Draw head with shadow
     CTX.fillStyle = this.color;
     CTX.shadowBlur = 20;
     CTX.shadowColor = "rgba(0, 0, 0, 0.5)";
@@ -367,7 +346,6 @@ class Snake {
     CTX.shadowOffsetX = 0;
     CTX.shadowOffsetY = 0;
 
-    // Draw eyes
     let eyeSize = this.size / 6;
     CTX.fillStyle = "black";
     CTX.beginPath();
@@ -377,7 +355,6 @@ class Snake {
     CTX.arc(x + size / 2 + this.eyeOffset.right.x, y + size / 2 + this.eyeOffset.right.y, eyeSize, 0, Math.PI * 2);
     CTX.fill();
 
-    // Draw body segments with 3D effect
     for (let i = 1; i < this.history.length; i++) {
       let { x, y } = history[i];
       let radius = size / 2;
@@ -391,16 +368,15 @@ class Snake {
       CTX.fill();
     }
 
-    // Draw target word next to the snake
-    CTX.fillStyle = "#FFFF00"; // Default yellow color
+    CTX.fillStyle = "#FFFF00"; 
     if (targetWord === "belt") {
-      CTX.fillStyle = "#0000FF"; // Blue for belt
+      CTX.fillStyle = "#0000FF";
     } else if (targetWord === "shirt") {
-      CTX.fillStyle = "#00FFFF"; // Cyan for shirt
+      CTX.fillStyle = "#00FFFF"; 
     } else if (targetWord === "boot") {
-      CTX.fillStyle = "#A52A2A"; // Brown for boot
-    } else if (targetWord === "glass") {
-      CTX.fillStyle = "#00FF00"; // Green for glass
+      CTX.fillStyle = "#A52A2A"; 
+    } else if (targetWord === "glasses") {
+      CTX.fillStyle = "#00FF00"; 
     }
 
     CTX.font = "bold 20px Poppins, sans-serif";
@@ -414,7 +390,7 @@ class Snake {
     if (x + this.size > W || x < 0 || y + this.size > H || y < 0) {
       isGameOver = true;
 
-      crashSound.play(); // Play crash sound on game over
+      crashSound.play(); 
 
     }
   }
@@ -447,12 +423,11 @@ class Snake {
           if (food.type !== targetWord) {
             isGameOver = true;
 
-            crashSound.play(); // Play crash sound on game over
+            crashSound.play();
 
           } else {
             incrementScore();
-            eatSound.play(); // Play eating sound when food is eaten
-
+            eatSound.play(); 
             food.pos = new helpers.Vec(
               ~~(Math.random() * cells) * cellSize,
               ~~(Math.random() * cells) * cellSize
@@ -474,7 +449,6 @@ class Snake {
   }
 
   shouldOpenMouth() {
-    // Check if the snake is near food
     for (let food of foods) {
       if (helpers.isCollision(this.pos, food.pos) && food.type !== targetWord) {
         return true;
@@ -555,11 +529,9 @@ function reset() {
   loop();
 }
 function adjustCamera() {
-  // Calculate the center position of the snake on the canvas
   const cameraX = snake.pos.x - W / 2;
   const cameraY = snake.pos.y - H / 2;
 
-  // Translate the context to center on the snake
   CTX.translate(-cameraX, -cameraY);
 }
 
@@ -578,13 +550,13 @@ function loop() {
       p.update();
     }
     helpers.garbageCollector();
-    CTX.setTransform(1, 0, 0, 1, 0, 0); // Reset the transform
+    CTX.setTransform(1, 0, 0, 1, 0, 0); 
 
   } else {
     gameOver();
   }
 }
-bgMusic.loop = true; // Make background music loop
+
 
 
 function initialize() {
@@ -592,7 +564,7 @@ function initialize() {
   KEY.listen();
   cellsCount = cells * cells;
   cellSize = W / cells;
-  bgMusic.play()
+playbg()
 
   snake = new Snake();
   snake.draw()
@@ -603,7 +575,6 @@ function initialize() {
   
   loop();
 }
-let d = new Snake()
-console.log('dff',d.history);
+
 
 initialize();
