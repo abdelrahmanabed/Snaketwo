@@ -413,7 +413,6 @@ class Snake {
     let { x, y } = this.pos;
     if (x + this.size > W || x < 0 || y + this.size > H || y < 0) {
       isGameOver = true;
-      bgMusic.pause()
 
       crashSound.play(); // Play crash sound on game over
 
@@ -447,7 +446,6 @@ class Snake {
         if (helpers.isCollision(this.pos, food.pos)) {
           if (food.type !== targetWord) {
             isGameOver = true;
-            bgMusic.pause()
 
             crashSound.play(); // Play crash sound on game over
 
@@ -506,6 +504,8 @@ function clear() {
 }
 
 function gameOver() {
+  bgMusic.pause()
+
   isGameOver = true;
   CTX.fillStyle = "rgba(0,0,0,.9)";
   CTX.fillRect(0, 0, W, H);
